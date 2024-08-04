@@ -14,9 +14,6 @@ namespace StudentManagement.API.Mappings
             CreateMap<Department,DepartmentDTO>().ReverseMap();
             CreateMap<AddDepartmentDTO,Department>().ReverseMap();
             CreateMap<UpdateDepartmentDTO, Department>().ReverseMap();
-            CreateMap<Grade,GradesDTO>().ReverseMap();  
-            CreateMap<AddGradeDTO,Grade>().ReverseMap();
-            CreateMap<UpdateGradeDTO,Grade>().ReverseMap();
         }
     }
 }

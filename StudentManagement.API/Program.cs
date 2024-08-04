@@ -17,7 +17,6 @@ Options.UseSqlServer(builder.Configuration.GetConnectionString("StudentManagemen
 
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();  
-builder.Services.AddScoped<IGradeRepository, GradeRepository>();
 
 
 builder.Services.AddAutoMapper(typeof(AutomapperProfiles));
