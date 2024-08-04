@@ -27,7 +27,7 @@ namespace StudentManagement.API.Repositories
 
             if (StudentDomainModel != null)
             {
-                studentManagementDbContext.Remove(StudentDomainModel);
+                studentManagementDbContext.Students.Remove(StudentDomainModel);
                 await studentManagementDbContext.SaveChangesAsync();
                 return StudentDomainModel;
             }

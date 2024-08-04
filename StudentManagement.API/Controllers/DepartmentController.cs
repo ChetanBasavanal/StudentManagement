@@ -27,7 +27,7 @@ namespace StudentManagement.API.Controllers
 
         //GET:localhost:7295/api/Department
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
             //Get data from Domain Models
             var Department= await departmentRepository.GetAllAsync();
