@@ -5,7 +5,7 @@ namespace StudentManagement.API.Data
 {
     public class StudentManagementDbContext:DbContext
     {
-        public StudentManagementDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
+        public StudentManagementDbContext(DbContextOptions<StudentManagementDbContext> dbContextOptions) : base(dbContextOptions)
         {
             
         }
@@ -14,5 +14,8 @@ namespace StudentManagement.API.Data
         public DbSet<Grade> Grades { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Course> Courses { get; set; }
+
+        public DbSet<Employee> Employees { get; set; }
     }
 }

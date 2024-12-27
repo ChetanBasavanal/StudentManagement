@@ -1,0 +1,28 @@
+﻿@model StudentManagement.UI.Models.DTO.DepartmentDTO;
+
+<h1 class="mt-3">Edit Department Details</h1>
+
+
+@if(Model is not null)
+{
+    <form method="post">
+
+        <div class="mt-3">
+            <label class="form-label">Department Name</label>
+            <input type="text" class="form-control" asp-for="DepartmentName"  />
+        </div>
+
+        <div class="mt-3">
+            <label class="form-label">Head</label>
+            <input type="text" class="form-control" asp-for="Head" />
+        </div>
+
+        <div class="mt-3 d-flex justify-content-between">
+            <button class="btn btn-success" type="submit" asp-controller="Department" asp-action="Edit"> Update</button>
+            <button class="btn btn-danger" asp-controller="Department" asp-action="Delete"
+                    type="submit">
+                Delete
+            </button>
+        </div>
+    </form>
+}

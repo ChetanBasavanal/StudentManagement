@@ -17,10 +17,34 @@ namespace StudentManagement.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("StudentManagement.API.Models.DomainModels.Course", b =>
+                {
+                    b.Property<int>("CourseID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CourseID"));
+
+                    b.Property<string>("CourseName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Credits")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CourseID");
+
+                    b.ToTable("Courses");
+                });
 
             modelBuilder.Entity("StudentManagement.API.Models.DomainModels.Department", b =>
                 {
@@ -41,6 +65,30 @@ namespace StudentManagement.API.Migrations
                     b.HasKey("DepartmentID");
 
                     b.ToTable("Departments");
+                });
+
+            modelBuilder.Entity("StudentManagement.API.Models.DomainModels.Employee", b =>
+                {
+                    b.Property<int>("EmployeeID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeID"));
+
+                    b.Property<string>("Department")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DepartmentID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EmployeeName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EmployeeID");
+
+                    b.HasIndex("DepartmentID");
+
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("StudentManagement.API.Models.DomainModels.Grade", b =>
@@ -133,6 +181,17 @@ namespace StudentManagement.API.Migrations
                     b.ToTable("Teachers");
                 });
 
+            modelBuilder.Entity("StudentManagement.API.Models.DomainModels.Employee", b =>
+                {
+                    b.HasOne("StudentManagement.API.Models.DomainModels.Department", "departments")
+                        .WithMany("employees")
+                        .HasForeignKey("DepartmentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("departments");
+                });
+
             modelBuilder.Entity("StudentManagement.API.Models.DomainModels.Grade", b =>
                 {
                     b.HasOne("StudentManagement.API.Models.DomainModels.Student", "Student")
@@ -153,6 +212,11 @@ namespace StudentManagement.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("StudentManagement.API.Models.DomainModels.Department", b =>
+                {
+                    b.Navigation("employees");
                 });
 #pragma warning restore 612, 618
         }

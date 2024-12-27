@@ -1,0 +1,35 @@
+﻿@model IEnumerable<StudentManagement.UI.Models.DTO.StudentsDTO>
+
+<h1>Student Data</h1>
+
+<div class="d-flex justify-content-end">
+    <a class="btn btn-secondary" asp-controller="Students" asp-action="Add">Add Student</a>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>StudentID</th>
+            <th>FirstName</th>
+            <th>LastName</th>
+            <th>DOB</th>
+            <th>Address</th>
+            <th>Email</th>
+            <th> </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var Student in Model)
+        {
+            <tr>
+                <td>@Student.StudentID</td>
+                <td>@Student.FirstName</td>
+                <td>@Student.LastName</td>
+                <td>@Student.DOB</td>
+                <td>@Student.Address</td>
+                <td>@Student.Email</td>
+                <td><a clas="btn btn-light" asp-action="Edit" asp-controller="Students" asp-route-id="@Student.StudentID">Edit</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

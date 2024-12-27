@@ -9,6 +9,10 @@ using AutoMapper;
 using StudentManagement.API.Models.DomainModels;
 using StudentManagement.API.Repositories;
 using StudentManagement.API.CustomActionFilter;
+using LazyCache;
+using StudentManagement.API.Caching;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StudentManagement.API.Controllers
 {
@@ -20,23 +24,39 @@ namespace StudentManagement.API.Controllers
         private readonly StudentManagementDbContext studentManagementDbContext;
         private readonly IStudentRepository studentRepository;
         private readonly IMapper mapper;
+        private readonly ICacheProvider cacheProvider;
 
-        public StudentsController(StudentManagementDbContext studentManagementDbContext, IStudentRepository studentRepository,IMapper mapper)
+        public StudentsController(StudentManagementDbContext studentManagementDbContext, IStudentRepository studentRepository,
+            IMapper mapper,ICacheProvider cacheProvider)
         {
             this.studentManagementDbContext = studentManagementDbContext;
             this.studentRepository = studentRepository;
             this.mapper = mapper;
+            this.cacheProvider = cacheProvider;
         }
 
         //localhost:7295/api/Students
         [HttpGet]
+        //[Authorize(Roles ="Reader")]
         public async Task<IActionResult> GetAll()
         {
             //Get Data from DB aka Domain models
-            var Students = await studentRepository.GetAllAsync();
+            if(!cacheProvider.TryGetValue(CacheKeys.Student,out List<Student> StudentDomainModel))
+            {
+                StudentDomainModel= await studentRepository.GetAllAsync();
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddSeconds(30),
+                    SlidingExpiration = TimeSpan.FromSeconds(30),
+                    Size = 10
+                };
+                cacheProvider.Set(CacheKeys.Student,StudentDomainModel,cacheEntryOptions);
+            }
+            // In the above code In-memory Caching has been applied.
 
             //Map Domain models to DTO's
-            var StudentDTO = mapper.Map<List<StudentDTO>>(Students);
+            var StudentDTO = mapper.Map<List<StudentDTO>>(StudentDomainModel);
             
             return Ok(StudentDTO);
         }
@@ -44,6 +64,7 @@ namespace StudentManagement.API.Controllers
         //GET: localhost:7295/api/Students/{id}
         [HttpGet]
         [Route("{Id}")]
+        //[Authorize(Roles ="Reader")]
         public async Task<IActionResult> GetById(int Id)
         {
             var Student = await studentRepository.GetByIdAsync(Id); //LINQ
@@ -60,6 +81,7 @@ namespace StudentManagement.API.Controllers
         //localhost:7295/api/Students
         [HttpPost]
         [ValidateModel]
+        //[Authorize(Roles ="Writer")] //if you want to add both roles, you just need to remove the roles from this line or, (Roles="Writer,Reader")
         public async Task<IActionResult> Create([FromBody] AddStudentRequestDTO addStudentRequestDTO)
         {
             // map dto to domain model
@@ -77,7 +99,8 @@ namespace StudentManagement.API.Controllers
         //POST: localhost:7295/api/Students/{id}
         [HttpPut]
         [Route("{Id:int}")]
-        [ValidateModel]
+        //[ValidateModel]
+        //[Authorize(Roles ="Writer")]
         public async Task<IActionResult> Update([FromRoute] int Id, [FromBody] UpdateStudentRequestDTO updateStudentRequestDTO)
         {
             //map DTO to Domain model
@@ -99,6 +122,7 @@ namespace StudentManagement.API.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
+        //[Authorize(Roles ="Writer")]
         public async Task<IActionResult> Delete([FromRoute]int id)
         {
             //delete data from Domain Model

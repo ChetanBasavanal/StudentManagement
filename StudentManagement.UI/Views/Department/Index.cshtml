@@ -1,0 +1,31 @@
+﻿@model IEnumerable<StudentManagement.UI.Models.DTO.DepartmentDTO>
+
+<h1>Department Data</h1>
+
+<div class="d-flex justify-content-end">
+    <a class="btn btn-secondary" asp-controller="Department" asp-action="Add">Add Department</a>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Department ID</th>
+            <th>Department Name</th>
+            <th>Head</th>
+            
+            <th> </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Department in Model)
+        {
+            <tr>
+                <td>@Department.DepartmentID</td>
+                <td>@Department.DepartmentName</td>
+                <td>@Department.Head</td>
+                
+                <td><a clas="btn btn-light" asp-action="Edit" asp-controller="Department" asp-route-id="@Department.DepartmentID">Edit</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
